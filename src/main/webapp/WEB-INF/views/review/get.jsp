@@ -19,8 +19,7 @@ pageEncoding="UTF-8" %>
 
 	<%@ include file="/resources/html/header.jsp" %>
   
-<!--     <link href="/resources/css/letterboxd.css" rel="stylesheet" media="screen, projection" /> -->
-    <script src="https://s.ltrbxd.com/static/js/main.min.ed93f370.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.3.2/jquery-migrate.min.js"></script>
      <link rel="icon" href="/resources/img/favicon_noback.ico" type="image/x-icon">
@@ -32,10 +31,7 @@ pageEncoding="UTF-8" %>
     <script src="/resources/js/reviewLike.js"></script>
     <script src="/resources/js/reviewReply.js"></script>
     <script src="/resources/js/reviewReport.js"></script>
-    
-    <!-- 이렇게 삽입하면 아래에서 변수처럼 쓸 수 있다.   -->
-    
-    
+
     <script>    
     	$(function(){
             console.log("========= COMMENT JS =======")
@@ -178,11 +174,11 @@ pageEncoding="UTF-8" %>
             })//delete
             
         })//js
-    </script>
+    </script> 
 
     <style>
-        body,input,textarea,select,button,table{font-family:'ELAND 초이스';}
-        body,div,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,p,form,fieldset,input,table,tr,th,td{margin:0;padding:0;}
+        *{font-family: 'ELAND 초이스';}
+        body,div,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,p,form,fieldset,input,table,tr,th,td{margin:0; padding:0;}
         h1,h2,h3,h4,h5,h6{font-weight:normal;font-size:100%;}
         ul,ol{list-style:none;}
         fieldset,img{border:0; vertical-align:top;}
@@ -191,16 +187,16 @@ pageEncoding="UTF-8" %>
         /* a-style */
         a{color:#333;text-decoration:none;text-align: center;}
         a:hover,a:active,a:focus,a:visited{color:#333;text-decoration:none;}
-        body{
+        .view{
 		    width: 998px;
 		    margin: 0 auto;
 		    font-size: 20px;
-            font-family: 'ELAND 초이스';
             -ms-user-select: none; 
             -moz-user-select: -moz-none;
             -khtml-user-select: none;
             -webkit-user-select: none;
             user-select: none; 
+            min-height: 100%;
 		}
 		#commentTs{
 			float: right;
@@ -209,7 +205,6 @@ pageEncoding="UTF-8" %>
             width: 90%;
             height: 100px;
             font-size: 50px;
-            font-family: 'ELAND 초이스';
             text-align: center;
             margin: 0 auto;
         }
@@ -248,7 +243,6 @@ pageEncoding="UTF-8" %>
         button {
             margin-left: 20px;
             background-color: white;
-            font-family: "ELAND 초이스";
             font-size: 20px;
             font-weight: 400;
             text-align: center;
@@ -257,37 +251,18 @@ pageEncoding="UTF-8" %>
             width: auto;
             border: none;
             border-radius: 4px;
-            /* box-shadow: 0 4px 6px -1px rgba(169, 235, 255, 0.781), 0 2px 4px -1px rgba(125, 160, 212, 0.425); */
             cursor: pointer;
             transition: 0.5s;
         }
         #threeBtn, #reportBtn{
             float: right;
+            margin-bottom: 20px;
+            margin-top: 30px;
         }
         #emptyheart{
             width: 20px;
             height: 20px;
         }
-        table {
-			width:100px;
-		    text-align: center;
-		    margin-top: 10px ;
-            float: right;
-		    font-size: 30px;
-            font-family: 'ELAND 초이스';
-  			border-collapse: collapse;
-		  }
-		 td{
-		  	color: black;
-		  	font-size:15px;
-		  	padding: 10px;
-  		  }
-		  th{
-		  	font-weight: bold;
-		  	border:10px;
-		  	margin:10px;
-		  	padding:15px;
-  		  }
         #commentList{
             display: inline-block;
             font-size: 16px;
@@ -304,11 +279,7 @@ pageEncoding="UTF-8" %>
             margin-top: 300px;
             margin-left: 400px;
             }
-            
-     * {
-            font-family: 'ELAND 초이스';
-        }
-        
+ 
     #diary-entry-submit-button{
     
         float: right;
@@ -335,7 +306,7 @@ pageEncoding="UTF-8" %>
     }
      
     .star-rating label {
-      -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
+      -webkit-text-fill-color: transparent;
       -webkit-text-stroke-width: 2.3px;
       -webkit-text-stroke-color: #2b2a29;
       cursor: pointer;
@@ -354,106 +325,82 @@ pageEncoding="UTF-8" %>
     height: 350px;
     width: 350px;
     }
-       
+    
+    #profile{
+    width: 40px;
+    height: 40px; 
+    border-radius: 70%;
+    overflow: hidden;
+   /*  margin-left:20px; */
+    }
+    
+    #heartCnt{
+ 	text-align:center;
+    }
+	
+	body{
+    display: flex;
+    flex-direction: column;
+	}
+	
+	footer {
+	  width: 100vw;
+	  align-items: center;
+	  margin-top: auto;
+	  position: absolute;
+      left: 0;
+      bottom: 0;
+	}
+	
+	.image{
+	float:left
+	}
+	
+	#review{
+	float:left	
+	height: 500px;
+	margin-left:20px;
+	padding-left: 150px;
+	}
+	
+	#count {
+    text-align: -webkit-right;
+	}
+	  
+	
+      
     </style>
 	
   </head>
-
-  <body class="view">
-	
-      <div class="site-header-bg"></div>
-<!--       <section>
-        <div
-          class="react-component"
-          data-component-class="globals.comps.NavComponent"></div> -->
-
- 
-    <div id="content" class="site-body">
-      <div class="content-wrap">
-        <div class="cols-2">
-          <section class="section col-17 col-main overflow">
-            <div class="col-4 gutter-right-1">
-              <section class="poster-list -p150 el col">
-                <div
-                  class="
-                    really-lazy-load
-                    poster
-                    film-poster film-poster-506032
-                    linked-film-poster
-                  "
-                  data-image-width="150"
-                  data-image-height="225"
-                >
-                  <img
-                    src="https://www.themoviedb.org/t/p/original${reviewFilmUserVO.poster_path}"
-                    width="150"
-                    height="225"
-                    class="image"
-                    itemprop="image"
-                  />
-                  <span class="frame"><span class="frame-title"></span></span>
-                </div>
-              </section>
-
-              <div
-                class="js-csi"
-                data-on-load="csi-availability"
-              ></div>
-            </div>
- 
-            <section class="col-12 review">
-              <section class="film-viewing-info-wrapper">
-                <header class="page-header overflow person-header">
-                  <div class="person-summary -inline">
-                    <a class="avatar -a24" href="/mypage/main?userid=${reviewFilmUserVO.writer}">
-                      <%-- <img src="https://younghoon.s3.ap-northeast-2.amazonaws.com/${reviewFilmUserVO.profile_photo_path}"
-                        alt="${reviewFilmUserVO.writer}"
-                        width="24"
-                        height="24"
-                      /> --%>
-                    </a>  
-                    <h1
-                      class="title-4"
-                      itemprop="author"> 
+	<body>
+  <div class="view">
+      <div class="content-wrap">          
+       	<a href="/film/${reviewFilmUserVO.film_id}/">            
+             <img src="https://www.themoviedb.org/t/p/original${reviewFilmUserVO.poster_path}"
+               width="150" height="225" class="image" itemprop="image"/>  
+        </a>
+    	<div id="review">
+			<a href="/mypage/main?userid=${reviewFilmUserVO.writer}">
+                  <img src="https://younghoon.s3.ap-northeast-2.amazonaws.com/${reviewFilmUserVO.profile_photo_path}"
+                  	id = "profile"
+                   alt="${reviewFilmUserVO.writer}"/>
+             </a>
               
-                      <a href="/mypage/main?userid=${reviewFilmUserVO.writer}" itemprop="sameAs" class="name">
-                        <span itemprop="name">${reviewFilmUserVO.nickname}님의 리뷰 </span>
-                      </a>
-                    </h1>
-                  </div>
+               <a href="/mypage/main?userid=${reviewFilmUserVO.writer}">${reviewFilmUserVO.nickname}님의</a> 
+               <a href="/film/${reviewFilmUserVO.film_id}/">${reviewFilmUserVO.title} 리뷰  </a> 
 
-                  <div class="clear"></div>
-                </header>
-
-                <h2 class="headline-2 prettify">
-                  <span class="film-title-wrapper">
-                    <a href="/film/${reviewFilmUserVO.film_id}/">${reviewFilmUserVO.title}</a>
-                   <%--  <small class="metadata"> <fmt:formatDate value="${reviewFilmUserVO.release_date}" pattern="yyyy" /></small> --%>
-                  </span>
-                  <span class="rating rating-large rated-large-10">
-                    <%-- ${reviewFilmUserVO.rate} --%>  ★★★★
-                  </span>
-                </h2>
-        
-              </section>
-
-             
-                <div>
-                  <div>
-                    <p>${reviewFilmUserVO.content}</p>
-                  </div>
-                </div>
-
-              </div>
-        </div>
-      </div>
-   
+               <%-- ${reviewFilmUserVO.rate}   ★★★★★ --%>
+        	   <p>${reviewFilmUserVO.content}</p>	 
+         </div>       
+           
+           </div>   
+     
 		
 		<form method="POST" action="/film/${reviewFilmUserVO.film_id}/review/${reviewFilmUserVO.rno}">
             <input type="hidden" name="rno" value="${reviewFilmUserVO.rno}">
             <input type="hidden" name="userId" value="${__LOGIN__.userId}">
             <input type="hidden" name="likecheck" value="${reviewVO.likecheck}">
-		<!-- 신고 / 좋아요 -->
+			<!-- 신고 / 좋아요 -->
             <div id="count">
                 <table>
                     <tr>
@@ -464,29 +411,21 @@ pageEncoding="UTF-8" %>
                             <c:if test="${__LOGIN__.userId != null}">
                                 <button id="likeBtn"><img id="likeimg" src="/resources/img/emptyheart.png" alt="좋아요" width="30px" height="30px"></button>
                             </c:if>
-
                         </td>
                     </tr>
-                    <tr>
-                        
-                        <td>${heartCnt}</td>
+                    <tr>                        
+                        <td id="heartCnt">&nbsp;&nbsp;&nbsp;${heartCnt}</td>                      
                     </tr>
                 </table>
             </div>
-
-            <hr>
-            <div id="content">
-                       <div class="review body-text -prose -hero -loose">
        
-              </div>
-            </div>
-            <hr>
+           
             <div id="threeBtn">
                  <button type="button" id="modify" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modifyModal">
                   수정 
                   </button>
 				 <button type="button" id="delete" class="btn btn-outline-dark">삭제</button>
-                <button type="button" id="listBtn" class="btn btn-outline-dark">목록</button>
+               <!--  <button type="button" id="listBtn" class="btn btn-outline-dark">목록</button> -->
             </div>                  
 
   		         <!-- Modal -->
@@ -500,22 +439,17 @@ pageEncoding="UTF-8" %>
                     <div class="modal-body">
                     
                     
-                    <% 
-                    
-            	Integer writer = (Integer) session.getAttribute("userId");                   
-            
+                    <%                    
+            	Integer writer = (Integer) session.getAttribute("userId");                              
                     %> 
         
-<!--         <section class="col col-13 overflow expanded"> -->
+
              <form method="POST" action="/film/${reviewFilmUserVO.film_id}/review/m/${reviewFilmUserVO.rno}">
                 
                 <input type="hidden" name="film_id" value="${reviewFilmUserVO.film_id}" id="frm-film-id">
                 <input type="hidden" name="writer" value="${__LOGIN__.userId}">
                 <input type="hidden" name="rno" value="${reviewFilmUserVO.rno}">
-                
-                
-
-                <fieldset>
+                 <fieldset>
                     
                     <div class="form-row">
                         <textarea name="content" id="frm-review" class="field">${reviewFilmUserVO.content}</textarea>
@@ -523,7 +457,6 @@ pageEncoding="UTF-8" %>
                         
                         
                         <div id = "starbox">
-                         
                          
                          <div class="star-rating space-x-4 mx-auto">
                             <input type="radio" id="5-stars" name="rate" value=5 v-model="ratings"/>
@@ -551,9 +484,14 @@ pageEncoding="UTF-8" %>
                   </div>
                    
                 </div>
-               
-              </div>
               
-	
-  </body>
+              </div>
+               </form>
+           
+      </div>
+      </body>
+    
+	<%@include file="/resources/html/filmFooter.jsp" %>
+ 	 
+ 	  
 </html>
