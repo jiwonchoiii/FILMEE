@@ -1,0 +1,23 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* base */
+body,input,textarea,select,button,table{font-family:'ELAND 초이스'; font-size:12px; color:#333;}
+body,div,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,p,form,fieldset,input,table,tr,th,td{margin:0;padding:0;}
+h1,h2,h3,h4,h5,h6{font-weight:normal;font-size:100%;}
+ul,ol{list-style:none;}
+fieldset,img{border:0; vertical-align:top;}
+address{font-style:normal;}
+p,li,dd{font-size:1em; line-height:1.5em; text-align:justify;}
+/* a-style */
+a{color:#333;text-decoration:none;}
+a:hover,a:active,a:focus,a:visited{color:#333;text-decoration:none;}
+
+#wrapper {
+    width: 100%;
+}
+
+#container {
+    width: 1000px;
+    margin: 0 auto;
+}

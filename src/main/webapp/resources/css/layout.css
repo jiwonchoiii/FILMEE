@@ -1,0 +1,217 @@
+
+
+/* feature film 영역 */
+.feature .inWrap {
+	position: relative;
+}
+
+.feature .fInner {
+	margin: 0 auto;	width: 85%; overflow: hidden;
+	padding-bottom: 1%;
+}
+
+.feature li {
+	float: left; width: 188px; height: 282px;	margin-bottom: 4em; list-style: none
+}
+
+.feature li a {
+	position: relative;
+	display: block; background: #f0f0f0; height: 100%; margin: 0 3%;
+	box-shadow: 2px 2px 5px gray;
+	text-align: center;
+}
+.feature li span {
+	display: block;
+	position: absolute;
+	bottom: -3em;
+	width: 100%;
+    color:#333;
+	font-size: 1em;
+	font-weight: 400;
+}
+
+/* .feature li:nth-child(1) a{
+	background: url(../images/fitem01.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(2) a{
+	background: url(../images/fitem02.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(3) a{
+	background: url(../images/fitem03.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(4) a{
+	background: url(../images/fitem04.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(5) a{
+	background: url(../images/fitem05.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(6) a{
+	background: url(../images/fitem06.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(7) a{
+	background: url(../images/fitem07.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(8) a{
+	background: url(../images/fitem08.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(9) a{
+	background: url(../images/fitem09.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(10) a{
+	background: url(../images/fitem10.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(11) a{
+	background: url(../images/fitem11.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(12) a{
+	background: url(../images/fitem12.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(13) a{
+	background: url(../images/fitem13.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(14) a{
+	background: url(../images/fitem14.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(15) a{
+	background: url(../images/fitem15.jpg) center center no-repeat;
+	background-size: cover;
+}
+.feature li:nth-child(16) a{
+	background: url(../images/fitem16.jpg) center center no-repeat;
+	background-size: cover;
+} */
+
+.feature .swiper-pagination {
+	position: relative;
+	margin-top: 30px;
+}
+.feature .swiper-pagination-progress .swiper-pagination-progressbar{
+	background: rgba(4, 178, 217, 1);
+}
+
+.feature .button div {
+	position: absolute;
+	width: 60px;
+	height: 60px;
+<<<<<<< HEAD
+	background: rgba(4, 178, 217, 1);
+=======
+	
+>>>>>>> b0276caad4151a0383b18c2dd8e12c1ac4a59640
+	color: #fff;
+	border-radius: 50%;
+	text-align: center;
+	top: 50%;
+<<<<<<< HEAD
+	box-shadow: 2px 2px 5px gray;
+=======
+	
+>>>>>>> b0276caad4151a0383b18c2dd8e12c1ac4a59640
+	transition: all 0.2s
+}
+.feature .button div:active {
+	transform: translate(2px,2px);
+}
+.feature .button a {
+	display: block;
+	height: 100%;
+}
+
+.feature .back a {
+<<<<<<< HEAD
+	/* background: url(../resources/img/back.svg) center center no-repeat; */
+	/* background-size: 30px 30px; */
+=======
+	background: url(../resources/img/back-svgrepo-com.svg) center center no-repeat;
+	background-size: 30px 30px;
+>>>>>>> b0276caad4151a0383b18c2dd8e12c1ac4a59640
+    text-indent: -999px; overflow: hidden;
+}
+
+.feature .next a {
+<<<<<<< HEAD
+	/* background: url(../resources/img/next.svg) center center no-repeat; */
+	/* background-size: 30px 30px; */
+=======
+	background: url(../resources/img/next-svgrepo-com.svg) center center no-repeat;
+	background-size: 30px 30px;
+>>>>>>> b0276caad4151a0383b18c2dd8e12c1ac4a59640
+    text-indent: -999px; overflow: hidden;
+}
+
+.feature .back {
+	left: 1%;
+}
+.feature .next {
+	right: 1%;
+}
+
+
+
+/* 일반 pc */
+@media screen and (max-width:1280px) {
+
+}
+
+
+/* 테블릿 */
+@media screen and (max-width:1024px) {
+
+}
+
+/* 소형 테블릿 */
+@media screen and (max-width:768px) {
+
+	.feature .button div{
+		width: 40px;
+		height: 40px;
+	}
+	.feature .button div a {
+		background-size: 20px 20px;
+	}
+}
+
+/* 모바일 */
+@media screen and (max-width:640px) {
+
+
+}
+
+/* 소형 모바일 */
+@media screen and (max-width:480px) {
+
+	.feature .fInner {
+		width: 95%;
+	}
+	.feature li {
+		width: 140px; height: 210px;
+	}
+	.feature li span {
+		font-size: 1.1667em;
+	}
+	.feature .button {
+		display: none;
+	}
+	
+}
+
+
+
+/* 최소 사이즈 처리 */
+@media screen and (max-width:480px) {
+	
+}

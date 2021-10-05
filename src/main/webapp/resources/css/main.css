@@ -1,0 +1,40 @@
+body,input,textarea,select,button,table{font-family:'ELAND 초이스'; font-size:12px; color:#333;}
+body,div,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,p,form,fieldset,input,table,tr,th,td{margin:0;padding:0;}
+h1,h2,h3,h4,h5,h6{font-weight:normal;font-size:100%;}
+ul,ol{list-style:none;}
+fieldset,img{border:0; vertical-align:top;}
+address{font-style:normal;}
+p,li,dd{font-size:1em; line-height:1.5em; text-align:justify;}
+/* a-style */
+a{color:#333;text-decoration:none;}
+a:hover,a:active,a:focus,a:visited{color:#333;text-decoration:none;}
+
+.img-fluid{
+    max-width: 100%;
+    height: auto;
+}
+#mainText{
+    width: 100%;
+    padding: 30px;
+}
+#mainText>p:first-child{
+    text-align: center;
+    font-size: 30px;
+}
+#mainText>p:last-child{
+    text-align: center;
+    font-size: 15px;
+}
+
+#mainback{
+    text-align: center;
+}
+#boxoffice{
+    margin: 0 auto;
+    border: black solid 1px;
+    float: right;
+}
+
+#swiper-wrapper>ul>li{
+    display: inline;
+}

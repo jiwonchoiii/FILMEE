@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATTERN">%d{HH:mm:ss.SSS} %5p --- [%10.50t] %-1.50c{1.}.%-1.20M:%L: %m%n%ex</Property>
+    </Properties>
+    
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.filmee.myapp" level="trace" />
+        
+     	<!-- 3rdparty Loggers -->
+		<!-- 스프링 프레임워크를 위한 로거 -->
+        <Logger name="org.springframework.core" level="info" />
+        <Logger name="org.springframework.beans" level="info" />
+        <Logger name="org.springframework.context" level="info" />
+        <Logger name="org.springframework.web" level="info" />
+        
+        
+	    <!-- ===============================================================================================  -->
+        <!-- 가장 최신버전의 log4jdbc (버전: 1.x)은 공식적으로 로깅 라이브러리로 log4j2를 사용함에 따라,
+        아래의 log4jdbc를 위한 logger를 추가함으로써, 로깅 수행 -->
+        <!-- ===============================================================================================  -->
+        <logger name="log4jdbc.log4j2" level="info" additivity="false">
+
+            <!-- ===============================================================================================  -->
+            <!-- log4jdbc에서 출력할 로그의 내용을, 이젠 log4j2 로깅 라이브러리의 설정으로, MarkerFilter 태그를
+            통해, 결정하게 되었음. 아래 2개 모두 log4jdbc에서 권장하는 MarketFilter 설정임.
+            실제 사용시에는 아래의 2가지 중에 하나로 설정하여 사용. -->
+            <!-- ===============================================================================================  -->
+
+        	<!-- <MarkerFilter marker="LOG4JDBC_OTHER" onMatch="DENY" onMismatch="NEUTRAL"/>        	 -->
+  			<MarkerFilter marker="LOG4JDBC_JDBC" onMatch="DENY" onMismatch="NEUTRAL"/>
+
+            <!-- ===============================================================================================  -->
+      		
+		  	<appender-ref ref="ConsoleAppender"/>
+		</logger>
+		
+
+        <Root level="warn">
+            <AppenderRef ref="ConsoleAppender" />
+        </Root>
+    </Loggers>
+</Configuration>

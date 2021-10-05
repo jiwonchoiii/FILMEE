@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.filmee.myapp.mapper.AdminUserMapper">
+	
+	<select id="getList" resultType ="com.filmee.myapp.domain.UserVO">
+
+		
+		SELECT user_id, email, nickname, is_admin, join_ts, delete_ts, profile_text, profile_photo_path, sus_from, sus_to, auth_code
+		FROM fm_user     
+		<where>
+			<choose>
+				<when test="category eq 'T' .toString()">
+				</when>
+				<when test="category eq 'A' .toString()">
+					delete_ts IS NULL
+					<![CDATA[AND (sus_to IS NULL OR sus_to < current_date)]]>
+				</when>
+				<when test="category eq 'D' .toString()">
+					delete_ts IS NOT NULL					
+				</when>
+				<when test="category eq 'S' .toString()">
+					delete_ts IS NULL
+					<![CDATA[AND sus_to >= current_date]]>
+				</when>
+			</choose>
+			<choose>	
+				<when test="type eq 'N' .toString()">
+					AND REPLACE(LOWER(nickname), ' ', '') LIKE '%'||REPLACE(LOWER(#{keyword}), ' ', '')||'%'
+				</when>
+				
+				<when test="type eq 'E' .toString()">
+					AND REPLACE(LOWER(email), ' ', '') LIKE '%'||REPLACE(LOWER(#{keyword}), ' ', '')||'%'
+				</when>
+				
+			</choose>
+		</where>
+		ORDER BY 1
+		OFFSET ( #{currPage} - 1) * #{amount} ROWS
+        FETCH NEXT #{amount} ROWS ONLY
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+		SELECT count(user_id)
+		FROM fm_user
+		WHERE user_id > 0
+		<choose>
+			<when test="category eq 'T' .toString()">
+			</when>
+			<when test="category eq 'A' .toString()">
+					AND delete_ts IS NULL
+					<![CDATA[AND (sus_to IS NULL OR sus_to < current_date)]]>
+				</when>
+				<when test="category eq 'D' .toString()">
+					AND delete_ts IS NOT NULL					
+				</when>
+				<when test="category eq 'S' .toString()">
+					AND delete_ts IS NULL
+					<![CDATA[AND sus_to >= current_date]]>
+				</when>
+		</choose>
+		<choose>				
+				<when test="type eq 'N' .toString()">
+					AND REPLACE(LOWER(nickname), ' ', '') LIKE '%'||REPLACE(LOWER(#{keyword}), ' ', '')||'%'
+				</when>
+				
+				<when test="type eq 'E' .toString()">
+					AND REPLACE(LOWER(email), ' ', '') LIKE '%'||REPLACE(LOWER(#{keyword}), ' ', '')||'%'
+				</when>
+		</choose>
+	
+	</select>
+	
+	<update id="updateIsAdmin">
+		UPDATE fm_user
+		SET is_admin=(SELECT DECODE(is_admin, 'T', 'F', 'F', 'T')
+                      FROM fm_user
+                      WHERE user_id=#{userId})
+		WHERE user_id=#{userId}
+	</update>
+	
+	<select id="getUsersCount" resultType="com.filmee.myapp.domain.UserCountsVO">
+		<![CDATA[
+			SELECT 
+				   (SELECT count(user_id) FROM fm_user) AS total,				   
+				   (SELECT count(user_id) FROM fm_user 
+				   WHERE delete_ts IS NULL AND (sus_to IS NULL OR sus_to < current_date)) AS acc,
+				   (SELECT count(user_id) FROM fm_user
+				   WHERE delete_ts IS NULL AND sus_to >= current_date) AS acc_suspended,
+				   (SELECT count(user_id) FROM fm_user
+				    WHERE delete_ts IS NOT NULL	) AS acc_deleted
+				    
+			FROM dual
+		]]>
+		</select>
+	
+</mapper>

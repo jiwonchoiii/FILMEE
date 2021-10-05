@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.filmee.myapp.mapper.MypageMapper">
+
+	<select id='getMainUser' resultType='com.filmee.myapp.domain.MainUserVO'>
+		<![CDATA[			
+			SELECT user_id, profile_photo_path, profile_text, nickname
+			FROM fm_user
+			WHERE user_id = #{userid}
+		]]>
+	</select>
+	
+	<select id='getTotalCountMainFollowers' resultType='int'>
+		<![CDATA[			
+			SELECT count(*)
+			FROM fm_follow
+			WHERE followee = #{userid}
+		]]>
+	</select>
+	
+	<select id='getTotalCountMainFollowees' resultType='int'>
+		<![CDATA[			
+			SELECT count(*)
+			FROM fm_follow
+			WHERE follower = #{userid}
+		]]>
+	</select>
+	
+	<select id='getTotalCountMainFilms' resultType='int'>
+		<![CDATA[			
+			SELECT count(*)
+			FROM fm_film_reaction
+			WHERE user_id = #{userid}
+			AND code = 2
+		]]>
+	</select>
+	
+	<select id='getTotalCountMainReviews' resultType='int'>
+		<![CDATA[			
+			SELECT count(*)
+			FROM fm_review
+			WHERE writer = #{userid}
+		]]>
+	</select>
+	
+	<select id='getMainFilm' resultType='com.filmee.myapp.domain.MainFilmVO'>
+		<![CDATA[			
+			SELECT B.film_id filmid, B.poster_path poster, B.original_title title, to_char(B.release_date, 'YYYY') year
+			FROM fm_film_reaction A
+			LEFT OUTER JOIN fm_film B ON A.film_id = B.film_id
+			WHERE A.code = 1
+			AND A.user_id = #{userid}
+			ORDER BY A.insert_ts DESC
+		]]>
+	</select>
+	
+	<select id='getMainReview' resultType='com.filmee.myapp.domain.MainReviewVO'>
+		<![CDATA[			
+			SELECT B.film_id filmid, A.rno rno, B.poster_path poster, A.content content, A.rate rate, B.original_title title, A.rate * 20 width, A.insert_ts insert_ts 
+			FROM fm_review A
+			LEFT OUTER JOIN fm_film B ON A.film_id = B.film_id
+			WHERE A.writer = #{userid}
+			ORDER BY A.insert_ts DESC
+			OFFSET 0 ROWS
+			FETCH NEXT 4 ROWS ONLY
+		]]>
+	</select>
+	
+	<select id='getMainGuestbook' resultType='com.filmee.myapp.domain.MainGuestbookVO'>
+		<![CDATA[			
+			SELECT  A.gno gno, A.owner userid, A.writer writer, B.nickname nickname, A.content content, A.insert_ts insert_ts, A.update_ts update_ts
+			FROM fm_guest_book A
+			LEFT OUTER JOIN fm_user B ON A.writer = B.user_id
+			WHERE A.owner = #{userid}
+			ORDER BY A.insert_ts DESC
+			OFFSET 0 ROWS
+			FETCH NEXT 5 ROWS ONLY
+		]]>
+	</select>
+	
+	<select id='getMainActivity' resultType='com.filmee.myapp.domain.ActivityVO'>
+		<![CDATA[			
+			SELECT A.user_id userid, A.follower follower, E.nickname nicknameFollower, C.nickname nickname, D.content content,
+				   A.type type, A.code code, A.insert_ts insert_ts, B.original_title title, G.nickname nicknameGuestbook, F.owner owner,
+				   A.film_id filmid, A.rno rno, C.user_id followerid, F.writer writer, D.film_id reviewFilmId 
+			FROM fm_activity A
+			LEFT OUTER JOIN fm_film B ON A.film_id = B.film_id
+			LEFT OUTER JOIN fm_user C ON A.follower = C.user_id
+			LEFT OUTER JOIN fm_review D ON A.rno = D.rno
+			LEFT OUTER JOIN fm_user E ON A.user_id = E.user_id
+			LEFT OUTER JOIN fm_guest_book F ON A.gno = F.gno
+			LEFT OUTER JOIN fm_user G ON F.writer = G.user_id
+			WHERE A.user_id = #{userid}
+			OR A.user_id IN ( SELECT follower user_id FROM fm_follow WHERE followee = #{userid})
+			AND A.book_owner IS NULL
+			OR A.book_owner = #{userid}
+			ORDER BY A.insert_ts DESC
+			OFFSET 0 ROWS
+			FETCH NEXT 8 ROWS ONLY
+		]]>
+	</select>
+	
+	<delete id="deleteMainReview">
+    	{
+	    	CALL
+	        DECLARE
+	        BEGIN
+	            DELETE FROM fm_review WHERE rno = #{rno};
+	            DELETE FROM fm_activity where rno = #{rno};
+	        END
+    	}
+    </delete>
+    
+    <delete id="deleteMainGuestbook">
+    	{
+	    	CALL
+	        DECLARE
+	        BEGIN
+	            DELETE FROM fm_guest_book WHERE gno = #{gno};
+	            DELETE FROM fm_activity where gno = #{gno};
+	        END
+    	}
+    </delete>
+    
+    <insert id="insertGuestbook">
+    	<![CDATA[
+    		INSERT INTO fm_guest_book (owner, writer, content)
+    		VALUES (#{owner}, #{writer}, #{content})
+    	]]>
+    </insert>
+    
+    <insert id="insertFollow">
+    	<![CDATA[
+    		INSERT INTO fm_follow (follower, followee)
+			VALUES (#{userid}, #{sessionUserid})
+    	]]>
+    </insert>
+    
+    <delete id="deleteFollow">
+    	{
+	    	CALL
+	        DECLARE
+	        BEGIN
+				DELETE FROM fm_follow
+				WHERE follower = #{userid}
+				AND	  followee = #{sessionUserid};				
+	            
+	            DELETE FROM fm_activity
+				WHERE follower = #{userid}
+				AND	  user_id = #{sessionUserid};				
+	        END
+    	}
+    </delete>
+    
+    <select id='isFollowed' resultType='int'>
+		<![CDATA[
+			SELECT count(*)
+			FROM fm_follow
+			WHERE follower = #{userid}
+			AND followee = #{sessionUserid}
+		]]>		
+	</select>
+
+	<select id='getFilmReactionList' resultType='com.filmee.myapp.domain.FilmReactionVO'>
+		<![CDATA[			
+			SELECT B.film_id filmid, B.original_title title, B.plot plot, B.poster_path poster, A.user_id userid, A.code code, A.insert_ts 
+			FROM fm_film_reaction A
+			LEFT OUTER JOIN fm_film B ON A.film_id = B.film_id
+			WHERE user_id = #{userid}
+			AND code = #{code}
+			ORDER BY A.insert_ts DESC
+			OFFSET (#{currPage} - 1) * #{amount} ROWS
+			FETCH NEXT #{amount} ROWS ONLY
+		]]>
+	</select>
+	
+	<delete id='deleteFilmReaction'>
+		{
+	    	CALL
+	        DECLARE
+	        BEGIN
+				DELETE FROM fm_film_reaction
+				WHERE user_id = #{userid}
+				AND	  film_id = #{filmid}
+				AND	  code = #{code};
+	            
+	            DELETE FROM fm_activity
+				WHERE user_id = #{userid}
+				AND	  film_id = #{filmid}
+				AND	  code = #{code};
+	        END
+    	}
+		
+		
+	</delete>
+	
+	<select id='getFollowerList' resultType='com.filmee.myapp.domain.FollowerVO'>
+		<![CDATA[
+			SELECT A.follower follower, B.user_id userid, B.nickname nickname, A.followee followee, B.profile_photo_path photo, A.insert_ts
+			FROM fm_follow A
+			LEFT OUTER JOIN fm_user B ON A.follower = B.user_id
+			WHERE followee = #{userid}		
+			ORDER BY A.insert_ts DESC
+			OFFSET (#{currPage} - 1) * #{amount} ROWS
+			FETCH NEXT #{amount} ROWS ONLY
+		]]>
+	</select>
+	
+	<delete id='cancelFollower'>
+		{
+	    	CALL
+	        DECLARE
+	        BEGIN
+				DELETE FROM fm_follow
+				WHERE follower = #{follower}
+				AND	  followee = #{followee};				
+	            
+	            DELETE FROM fm_activity
+				WHERE follower = #{follower}
+				AND	  user_id = #{followee};				
+	        END
+    	}
+	</delete>
+	
+	<select id='getFolloweeList' resultType='com.filmee.myapp.domain.FolloweeVO'>
+		<![CDATA[
+			SELECT B.user_id userid, B.nickname nickname, A.follower follower, B.profile_photo_path photo, A.insert_ts
+			FROM fm_follow A
+			LEFT OUTER JOIN fm_user B ON A.followee = B.user_id
+			WHERE follower = #{userid}		
+			ORDER BY A.insert_ts DESC
+			OFFSET (#{currPage} - 1) * #{amount} ROWS
+			FETCH NEXT #{amount} ROWS ONLY
+		]]>
+	</select>	
+	
+	<select id='getGuestbookList' resultType='com.filmee.myapp.domain.GuestbookVO'>
+		<![CDATA[
+			SELECT A.gno gno, A.owner userid, A.writer writer, B.nickname nickname, A.content content, A.insert_ts insert_ts, A.update_ts update_ts
+			FROM fm_guest_book A
+			LEFT OUTER JOIN fm_user B ON A.writer = B.user_id
+			WHERE owner = #{userid}
+			ORDER BY insert_ts DESC
+			OFFSET (#{currPage} - 1) * #{amount} ROWS
+			FETCH NEXT #{amount} ROWS ONLY
+		]]>
+	</select>
+	
+	<delete id="deleteGuestbook">
+    	{
+	    	CALL
+	        DECLARE
+	        BEGIN
+	            DELETE FROM fm_guest_book WHERE gno = #{gno};
+	            DELETE FROM fm_activity where gno = #{gno};
+	        END
+    	}
+    </delete>
+	
+	<select id='getMyReviewList' resultType='com.filmee.myapp.domain.MypageReviewVO'>
+		<![CDATA[
+			SELECT B.film_id filmid, A.rno rno, B.poster_path poster, B.original_title title, A.rate rate, A.writer userid, A.content content, A.rate * 20 width, A.insert_ts
+			FROM fm_review A
+			LEFT OUTER JOIN fm_film B ON A.film_id = B.film_id
+			WHERE writer = #{userid}		
+			ORDER BY A.insert_ts DESC
+			OFFSET (#{currPage} - 1) * #{amount} ROWS
+			FETCH NEXT #{amount} ROWS ONLY
+		]]>
+	</select>
+	
+	<delete id="deleteMyReview">
+    	{
+	    	CALL
+	        DECLARE
+	        BEGIN
+	        	DELETE FROM fm_review_liked WHERE rno = #{rno};
+	            DELETE FROM fm_review WHERE rno = #{rno};
+	            DELETE FROM fm_activity where rno = #{rno};
+	        END
+    	}
+    </delete>
+	
+	<select id='getLikedReviewList' resultType='com.filmee.myapp.domain.LikedReviewVO'>
+		<![CDATA[
+			SELECT A.user_id userid, B.film_id filmid, A.rno rno, C.poster_path poster, C.original_title title, B.rate rate, B.writer writer, B.content content, B.rate * 20 width, A.insert_ts
+			FROM fm_review_liked A
+			LEFT OUTER JOIN fm_review B ON A.rno = B.rno
+			LEFT OUTER JOIN fm_film C ON B.film_id = C.film_id
+			WHERE A.user_id = #{userid}
+			ORDER BY A.insert_ts DESC
+			OFFSET (#{currPage} - 1) * #{amount} ROWS
+			FETCH NEXT #{amount} ROWS ONLY
+		]]>
+	</select>
+	
+	<delete id="cancelLikedReview">
+		{
+	    	CALL
+	        DECLARE
+	        BEGIN
+	        	DELETE FROM fm_review_liked WHERE rno = #{rno} AND user_id = #{userid};	            
+	            DELETE FROM fm_activity where rno = #{rno} AND type = 'RL' AND user_id = #{userid};
+	        END
+    	}	
+	</delete>
+	
+	<select id='getActivityList' resultType='com.filmee.myapp.domain.ActivityVO'>		
+		<![CDATA[
+			SELECT A.user_id userid, A.follower follower, E.nickname nicknameFollower, C.nickname nickname, D.content content,
+				   A.type type, A.code code, A.insert_ts insert_ts, B.original_title title, G.nickname nicknameGuestbook, F.owner owner,
+				   A.film_id filmid, A.rno rno, C.user_id followerid, F.writer writer, D.film_id reviewFilmId 
+			FROM fm_activity A
+			LEFT OUTER JOIN fm_film B ON A.film_id = B.film_id
+			LEFT OUTER JOIN fm_user C ON A.follower = C.user_id
+			LEFT OUTER JOIN fm_review D ON A.rno = D.rno
+			LEFT OUTER JOIN fm_user E ON A.user_id = E.user_id
+			LEFT OUTER JOIN fm_guest_book F ON A.gno = F.gno
+			LEFT OUTER JOIN fm_user G ON F.writer = G.user_id
+			WHERE A.user_id = #{userid}
+			OR A.user_id IN ( SELECT follower user_id FROM fm_follow WHERE followee = #{userid})
+			AND A.book_owner IS NULL
+			OR A.book_owner = #{userid}
+			ORDER BY A.insert_ts DESC
+			OFFSET (#{currPage} - 1) * #{amount} ROWS
+			FETCH NEXT #{amount} ROWS ONLY
+		]]>		
+	</select>	
+	
+	<select id='getTotalCountReactions' resultType='int'>
+		<![CDATA[
+			SELECT count(*) FROM fm_film_reaction
+			WHERE user_id = #{userid}
+			AND code = #{code}			
+		]]>		
+	</select>
+	
+	<select id='getTotalCountFollowers' resultType='int'>
+		<![CDATA[
+			SELECT count(*) FROM fm_follow
+			WHERE followee = #{userid}
+		]]>		
+	</select>
+	
+	<select id='getTotalCountFollowees' resultType='int'>
+		<![CDATA[
+			SELECT count(*) FROM fm_follow
+			WHERE follower = #{userid}
+		]]>		
+	</select>
+	
+	<select id='getTotalCountGuestbooks' resultType='int'>
+		<![CDATA[
+			SELECT count(*) FROM fm_guest_book
+			WHERE owner = #{userid}
+		]]>		
+	</select>
+	
+	<select id='getTotalCountMyReviews' resultType='int'>
+		<![CDATA[
+			SELECT count(*) FROM fm_review
+			WHERE writer = #{userid}
+		]]>		
+	</select>
+	
+	<select id='getTotalCountLikedReviews' resultType='int'>
+		<![CDATA[
+			SELECT count(*) FROM fm_review_liked
+			WHERE user_id = #{userid}
+		]]>		
+	</select>
+	
+	<select id='getTotalCountActivity' resultType='int'>
+		<![CDATA[
+			SELECT count(*) FROM fm_activity
+			WHERE user_id = #{userid}
+			OR user_id IN ( SELECT follower user_id FROM fm_follow WHERE followee = #{userid})
+			AND book_owner IS NULL
+			OR book_owner = #{userid}			
+		]]>		
+	</select>
+	
+	<update id='updateUserProfilePhoto'>
+		<![CDATA[
+			UPDATE fm_user 
+			SET profile_photo_path = #{fileName},
+			profile_text = #{profileText},
+			nickname = #{nickname},
+			update_ts = current_date
+			WHERE user_id = #{userid}			
+		]]>	
+	</update>
+	
+	<update id='updateUserProfile'>	
+		<![CDATA[
+			UPDATE fm_user 
+			SET profile_text = #{profileText},
+			nickname = #{nickname},
+			update_ts = current_date
+			WHERE user_id = #{userid}			
+		]]>	
+	</update>
+	
+</mapper>

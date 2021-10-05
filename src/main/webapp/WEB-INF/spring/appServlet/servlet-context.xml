@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<beans:beans 
+   xmlns="http://www.springframework.org/schema/mvc"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:beans="http://www.springframework.org/schema/beans"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+      http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+   <!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+   
+   <!-- Enables the Spring MVC @Controller programming model -->
+   <annotation-driven />
+
+   <!-- Handles HTTP GET requests for /resources/** 
+   by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+   <resources mapping="/resources/**" location="/resources/" />
+
+   <!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+   <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+      <beans:property name="prefix" value="/WEB-INF/views/" />
+      <beans:property name="suffix" value=".jsp" />
+   </beans:bean>
+   
+   <view-controller 
+      path="/main"
+      view-name="main/main"
+      status-code="200" 
+   />
+   
+   <view-controller 
+      path="/main/loginRequired"
+      view-name="main/loginRequired"
+      status-code="200" 
+   />
+                  
+   <view-controller 
+      path = "/main/forgotPw"
+      view-name = "main/forgotPw"
+      status-code = "200"
+      />
+   
+   <view-controller
+      path = "/forbidden"
+      view-name = "forbidden"
+      status-code = "200"
+      />
+
+   	<beans:bean
+      id="logInOutInterceptor"
+      class="com.filmee.myapp.interceptor.LogInOutInterceptor"
+      /> 
+                  
+	<beans:bean
+      id="authInterceptor"
+      class="com.filmee.myapp.interceptor.AuthInterceptor"
+      />
+
+	<beans:bean
+      id="autoLoginInterceptor"
+      class="com.filmee.myapp.interceptor.AutoLoginInterceptor"
+      />      
+	
+	<beans:bean
+	  id="adminInterceptor"
+	  class="com.filmee.myapp.interceptor.AdminInterceptor"
+	  />
+
+   <interceptors>
+      <interceptor>
+         <mapping path="/main/loginPost" />
+         <mapping path="/main/logout" />
+         <mapping path="/main/deleteAccount" />
+         
+         <beans:ref bean="logInOutInterceptor" />
+      </interceptor>
+      
+      <interceptor>
+         <!--  로그인이 돼있어야만 접근할 수 있는 페이지는 여기에 넣어주세요. -->
+         <mapping path="/board/register" />
+         <mapping path="/board/modify" />
+         
+         <beans:ref bean="authInterceptor" />
+      </interceptor>
+      
+      <interceptor>
+         <mapping path="/*" />
+         <mapping path="/*/*" />
+         
+         <!-- 제외 경로 : 로그인, 회원가입 등 계정 관련 -->
+         <exclude-mapping path="/main/logout" />   
+         <exclude-mapping path="/main/loginPost" />   
+         <exclude-mapping path="/main/loginRequired" />
+         <exclude-mapping path="/main/checkEmail" />   
+         <exclude-mapping path="/main/checkNickname" />   
+         <exclude-mapping path="/main/joinPost" />   
+         <exclude-mapping path="/main/emailAuthorized" />   
+         <exclude-mapping path="/main/forgotPw" />
+         
+         <!-- 제외경로 : AuthInterceptor Path -->
+         <exclude-mapping path="/board/register" />
+         <exclude-mapping path="/board/modify" />
+                   
+         <beans:ref bean="autoLoginInterceptor" />
+      </interceptor>
+      
+      <interceptor>
+      	<mapping path="/admin/**" />
+      	
+      	<beans:ref bean="adminInterceptor" />
+      </interceptor>
+      
+   </interceptors>
+
+
+   <context:component-scan base-package="com.filmee.myapp.controller" />
+   <context:component-scan base-package="com.filmee.myapp.interceptor" />
+   <context:component-scan base-package="com.filmee.myapp.exception" />
+   
+
+</beans:beans>

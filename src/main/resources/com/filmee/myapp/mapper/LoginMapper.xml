@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.filmee.myapp.mapper.LoginMapper">
+
+    <select id="selectUser" resultType="com.filmee.myapp.domain.UserVO">
+    
+        SELECT user_id, email, nickname, is_admin, join_ts, delete_ts, profile_text, profile_photo_path, sus_from, sus_to, auth_code
+        FROM   fm_user
+        WHERE  email=#{email}
+          AND  password=#{password}
+          AND  delete_ts is null
+
+    </select>
+    
+    <select id="selectUserBySocialEmail" resultType="com.filmee.myapp.domain.UserVO">
+    
+        SELECT user_id, email, nickname, is_admin, join_ts, delete_ts, profile_text, profile_photo_path, sus_from, sus_to, auth_code
+        FROM   fm_user
+        WHERE  email=#{email}
+          AND  delete_ts is null
+      
+
+    </select>
+    
+    <select id="selectSaltWithEmail" resultType="string">
+
+        SELECT salt
+        FROM fm_user
+        WHERE email = #{email}
+
+    </select>
+    
+
+    <update id="updateUserRememberMe">
+
+        UPDATE
+            fm_user
+        SET
+            remember_cookie = #{rememberCookie},
+            remember_age = #{rememberAge}
+        WHERE
+            email = #{email}
+
+    </update>
+
+    <select id="selectUserWithCookie" resultType="com.filmee.myapp.domain.UserVO">
+
+        SELECT 
+                user_id, email, nickname, is_admin, join_ts, delete_ts, profile_text, profile_photo_path, sus_from, sus_to, auth_code
+        FROM
+                fm_user
+        WHERE
+                remember_cookie = #{cookieValue}
+          AND   
+                remember_age > current_date
+
+    </select>
+    
+	<!-- 	//myPage쪽으로 넘어갈 부분 -->
+   
+	    <update id="updatePassword">
+		UPDATE fm_user
+		   SET password=#{password},
+		   	   salt=#{salt},
+		   	   update_ts=current_date
+		 WHERE email=#{email}
+	</update>
+	
+	
+
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+	version="4.0">
+
+	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>		
+		<param-value>/WEB-INF/spring/root-context.xml</param-value>
+	</context-param>
+	<!-- 스프링 컨테이너가 쓰는 설정파일. WAS가 올라올 때 이걸 설정해두고 아래 리스너가 쓴다. WAS가 올라올 때 가장 먼저 생성되는 객체는 리스너  -->
+	
+	<!-- Creates the Spring Container shared by all Servlets and Filters -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- Processes application requests -->
+	<servlet>
+		<servlet-name>appServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+													<!-- DispatcherServlet : FrontController 역할을 하는 서블릿  -->
+
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
+		</init-param>
+		<!-- 스프링 컨테이너가 두번째로 쓰는 설정파일. FrontController의 초기화 파라미터 -->
+
+		<init-param>
+			<param-name>throwExceptionIfNoHandlerFound</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<!-- Controller에 mapping된 uri가 없을경우 예외발생 -->
+		<!-- 기본값은 false -->
+
+		<load-on-startup>1</load-on-startup>
+		<!-- 만약 서블릿이 여러개 등록되어있다면 서블릿 객체를 수행시키는 순서 -->
+	</servlet>
+		
+	<servlet-mapping>
+		<servlet-name>appServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	<!-- 서블릿에서는 확장자패턴으로 했지만 directory pattern 으로 / 설정해두면 모든 요청이 이쪽으로 들어온다. 
+			=> DispatcherServlet이 모든 요청을 받는다. -->
+
+
+</web-app>

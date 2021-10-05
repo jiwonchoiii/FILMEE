@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+    <mapper namespace="com.filmee.myapp.mapper.ComplaintMapper">
+
+	    <insert id="insert">
+	        
+	        INSERT INTO fm_complaint (code, content,writer,send)
+	        VALUES(#{code},#{content},#{writer},#{send})
+	
+	    </insert>
+	
+	    
+	    <select id="userEmail" resultType="String">
+		    <![CDATA[ 
+		        SELECT  email
+				FROM fm_complaint , fm_user 
+				WHERE writer = user_id 
+				AND compno=#{compno}
+		    ]]>
+	    </select>
+
+	    
+	     <select id="getList" resultType="com.filmee.myapp.domain.ComplaintVO">
+	        <![CDATA[ 
+	            SELECT /*+ index_desc(fm_complaint) */ * 
+	            FROM fm_complaint
+	        ]]>
+    	</select>
+
+
+		<select id="select" resultType="com.filmee.myapp.domain.ComplaintVO">
+		    <![CDATA[ 
+		        SELECT *
+		        FROM fm_complaint
+		        WHERE compno = #{compno}
+		    ]]>
+	    </select>
+
+		<select 
+	        id="getListWithPaging" 
+	        resultType="com.filmee.myapp.domain.ComplaintVO">
+	        
+            SELECT 
+            	/*+ index_desc(fm_complaint) */ * 
+            FROM 
+            	fm_complaint 
+            <where>
+                <choose>
+                
+                    <when test="code eq '1'.toString()">
+                      code LIKE 1
+                    </when>   
+                    
+                    <when test="code eq '2'.toString()">
+                      code LIKE 2
+                    </when>  
+                    
+                    <when test="code eq '3'.toString()">
+                      code LIKE 3
+                    </when>  
+                    
+                    <when test="code eq '4'.toString()">
+                      code LIKE 4
+	                </when>
+                    
+                </choose>   
+            </where>
+            OFFSET ( #{currPage} - 1) * #{amount} ROWS
+            FETCH NEXT #{amount} ROWS ONLY
+	       
+    	</select>
+    	
+    	
+    	<update id="update">
+	        <![CDATA[ 
+	            UPDATE fm_complaint
+	            SET
+	            	content_re = #{content_re},
+	                check_ts = current_date
+	            WHERE
+	                compno = #{compno}
+	        ]]>
+	    </update>
+	    
+	    
+	    <update id="updateEnd">
+	        <![CDATA[ 
+	            UPDATE fm_complaint
+	            SET
+	            	content_re = #{content_re},
+	                complete_ts = current_date
+	            WHERE
+	                compno = #{compno}
+	        ]]>
+	    </update>
+
+
+    	<select id="getTotalCount" resultType="int">
+	        SELECT count(compno)
+	        FROM fm_complaint
+	        WHERE compno > 0
+        		<choose>
+                
+                	<when test="code eq '1'.toString()">
+                   AND    code LIKE 1
+                    </when>   
+                    
+                    <when test="code eq '2'.toString()">
+                   AND    code LIKE 2
+                    </when>    
+                    
+                   <when test="code eq '3'.toString()">
+                   AND    code LIKE 3
+                    </when>   
+                    <when test="code eq '4'.toString()">
+                   AND    code LIKE 4
+                    </when>    
+                    
+                </choose> 
+	    </select>
+	    <!-- count(*)가 아닌 count(pk)를 하면 정확한 레코드 건수를 구할 수 있다. 그리고 pk는 인덱스를 구성하는 컬럼이기 때문에 where pk > 0을 넣어 인덱스를 사용한다. -->
+	    	
+    	
+	</mapper>

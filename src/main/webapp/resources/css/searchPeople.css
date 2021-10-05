@@ -1,0 +1,65 @@
+#container {
+	width: 998px;
+	margin: 0 auto;
+	font-family:'Florencesans SC Exp'; 
+}
+
+section{
+	margin: 0 auto;
+	border-right: 1px solid darkgrey;
+}
+
+#sp_header{
+	margin : 35px 0px 25px 0px;		
+}
+
+#sp_header p{
+	font-size: 15px;
+	text-align : center;
+}
+
+strong{
+	font-size : 24px;
+	font-weight: bold;
+}
+
+#films{
+	margin-top : 35px;
+}
+
+.each_film{
+	margin-bottom : 20px;
+}
+
+.poster{
+	height : 242px;
+	text-align: center;
+}
+
+.poster > div{
+	position : relative;
+}
+
+.poster img{
+	width : 160px;
+}
+
+.description {
+	text-align: center;
+}
+
+aside{
+	text-align: center;
+}
+
+aside img{
+	margin-top: 10px;
+	width: 228px;
+}
+
+aside p{
+	margin-top : 3px;
+	text-align: center;
+	font-size: 18px;
+	font-weight: bold;
+}

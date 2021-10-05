@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+ 
+<mapper namespace="com.filmee.myapp.mapper.BoardCommentMapper">
+
+    <insert id="insert">
+        <selectKey keyProperty="bcno" order="BEFORE" resultType="int">
+            SELECT ISEQ$$_101443.nextval FROM dual
+        </selectKey>
+        <![CDATA[ 
+            INSERT INTO fm_board_comment(bno,writer,content)
+            VALUES (#{bno}, #{writer}, #{content})
+        ]]>
+    </insert>
+
+    <select id="list" resultType="com.filmee.myapp.domain.BoardCommentUserVO">
+        <![CDATA[ 
+            SELECT C.*, u.user_id, u.nickname, u.profile_photo_path profilePhotoPath
+            FROM fm_board_comment C, fm_user u
+			WHERE C.writer=u.user_id
+            AND bno=#{bno}
+            ORDER BY bcno DESC
+        ]]>
+    </select>
+
+    <delete id="delete">
+        <![CDATA[
+            DELETE FROM fm_board_comment
+            WHERE bcno=#{bcno}
+        ]]> 
+    </delete>
+
+    <update id="update">
+        <![CDATA[ 
+            UPDATE fm_board_comment 
+            SET content=#{content},
+            update_ts=current_date
+            WHERE bcno=#{bcno}
+        ]]>
+    </update>
+
+
+    <select id="read" resultType="com.filmee.myapp.domain.BoardCommentVO">
+        <![CDATA[ 
+            SELECT *
+            FROM fm_board_comment
+            WHERE bcno=#{bcno}
+        ]]>
+    </select>
+
+    
+    <select id="coCnt" resultType="int">
+        <![CDATA[ 
+            SELECT COUNT(*)
+            FROM fm_board_comment
+            WHERE bno=#{bno}
+        ]]>
+    </select>
+</mapper>

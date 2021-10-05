@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.filmee.myapp.mapper.FileMapper">
+
+        <insert id="insert">
+            <![CDATA[
+                INSERT INTO fm_file(bno, uuid, path, fname, mime)
+                VALUES (#{bno}, #{uuid}, #{path}, #{fname}, #{mime})
+            ]]>
+        </insert>
+
+        <select id="find" resultType="com.filmee.myapp.domain.FileVO">
+            <![CDATA[ 
+                SELECT /*+ index_desc(fm_file)*/*
+                FROM fm_file
+                WHERE bno=#{bno}
+            ]]>
+        </select>
+
+        <delete id="delete">
+            <![CDATA[ 
+                DELETE FROM fm_file
+                WHERE uuid=#{uuid}
+            ]]>
+        </delete>
+</mapper>

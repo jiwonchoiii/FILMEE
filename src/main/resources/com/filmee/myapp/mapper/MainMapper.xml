@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.filmee.myapp.mapper.MainMapper">
+
+	<select id='getMainFilms' resultType='com.filmee.myapp.domain.FilmeeFilmsVO'>
+		<![CDATA[			
+			SELECT film_id filmid, original_title title, popularity, poster_path poster
+			FROM fm_film
+			ORDER BY popularity DESC
+			OFFSET 0 ROWS
+			FETCH NEXT 5 ROWS ONLY
+		]]>
+	</select>
+	
+	<select id='getMainReviews' resultType='com.filmee.myapp.domain.FilmeeReviewsVO'>
+		<![CDATA[			
+			SELECT A.rno rno, B.film_id filmid, C.nickname nickname, A.rate rate, A.content content, A.insert_ts insertTs, A.like_cnt likeCnt, 
+					A.comment_cnt commentCnt, to_char(B.release_date, 'YYYY') year, B.original_title title, B.poster_path poster, A.rate * 20 width
+			FROM fm_review A
+			LEFT OUTER JOIN fm_film B ON A.film_id = B.film_id
+			LEFT OUTER JOIN fm_user C ON A.writer = C.user_id
+			WHERE A.insert_ts > current_date - 7		
+			ORDER BY A.like_cnt DESC, A.comment_cnt DESC, A.rate DESC
+			OFFSET 0 ROWS
+			FETCH NEXT 5 ROWS ONLY
+		]]>
+	</select>
+
+
+</mapper>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.filmee.myapp.mapper.FilmMapper">
+
+       <select id="selectFilmInfo" resultType="com.filmee.myapp.domain.FilmVO">
+    
+	SELECT *
+	FROM FM_FILM
+	WHERE FILM_ID = #{FILM_ID}
+		
+    </select>
+    
+    <select id="selectFilmPeople" resultType="com.filmee.myapp.domain.FilmPeopleVO">
+    
+    SELECT 
+        P.ENNAME,FP.*
+    FROM FM_FILM_PEOPLE FP, FM_PEOPLE P 
+    WHERE FP.PEOPLE_ID = P.PEOPLE_ID
+    AND FP.FILM_ID = #{FILM_ID}
+    ORDER BY FP.CREDIT_ORDER
+    
+    </select> 
+    
+    <select id="selectGenre" resultType="com.filmee.myapp.domain.FilmGenreVO">
+    SELECT *
+	FROM FM_GENRE G
+	WHERE G.FILM_ID = #{FILM_ID}
+    </select>
+<!-- 	<insert id="insert">
+        INSERT INTO FM_REVIEW (film_id, writer, rate, content, watched_date, is_spoiled)
+        VALUES(#{film_id}, #{writer}, #{rate}, #{content}, #{watched_date, jdbcType=VARCHAR}, #{is_spoiled})
+	</insert>  -->
+	
+	
+	<insert id="insert">         
+         <selectKey keyProperty="rno" order="BEFORE" resultType="int">
+            SELECT ISEQ$$_100784.nextval FROM dual
+        </selectKey>
+
+     INSERT INTO FM_REVIEW (film_id, writer, rate, content)
+        VALUES(#{film_id}, #{writer}, #{rate}, #{content})         
+    </insert>  
+ 
+
+	<select id="select" resultType="com.filmee.myapp.domain.ReviewFilmUserVO">
+
+	SELECT 
+     R.rno, R.film_id, R.writer, R.rate,R.CONTENT, R.insert_ts, 
+     R.update_ts, R.delete_ts, R.like_cnt, 
+     F.title, F.original_title, F.release_date,'YYYY', F.poster_path, u.nickname, u.profile_photo_path
+	FROM fm_review R, fm_film F, fm_user u
+    WHERE R.film_id = F.film_id
+    AND R.writer = u.user_id
+	AND R.rno = #{RNO}
+
+	</select>
+
+    <select id="selectList" resultType="com.filmee.myapp.domain.ReviewFilmUserVO">   
+
+   	SELECT 
+      R.rno, R.film_id, R.writer, R.rate,R.CONTENT, R.insert_ts, R.update_ts, R.delete_ts, R.like_cnt, 
+    F.title, F.original_title, F.release_date,'YYYY', F.poster_path, u.nickname, u.profile_photo_path
+	FROM fm_review R, fm_film F, fm_user u
+    WHERE R.film_id = F.film_id
+    AND R.writer = u.user_id
+	AND R.film_id = #{film_id}
+    ORDER BY R.insert_ts DESC        
+<!--      SELECT /*+ index_desc(fm_review) */ *
+     FROM fm_review
+     WHERE FILM_ID = #{FILM_ID} -->
+   </select>
+   
+	<delete id="delete">
+    	{
+	    	CALL
+	        DECLARE
+	        BEGIN
+	        	DELETE FROM fm_review_liked WHERE rno = #{rno};
+	            DELETE FROM fm_review WHERE rno = #{rno};
+	            DELETE FROM fm_activity where rno = #{rno};
+	        END
+    	}
+    </delete>
+   
+   <update id="modify">
+   <![CDATA[ 
+     UPDATE fm_review
+     SET
+        rate = #{rate},
+        content = #{content},       
+        update_ts = current_date
+    WHERE
+        rno = #{rno}
+     ]]>
+   </update>
+   
+   <select id="selectListWithPaging" resultType="com.filmee.myapp.domain.ReviewFilmUserVO" >
+	 SELECT  R.rno, R.film_id, R.writer, R.rate,
+	        R.CONTENT, R.insert_ts, R.update_ts, R.delete_ts, R.like_cnt,
+	        F. title, F.original_title, F. release_date, F.poster_path,
+	        R.like_cnt, F. title, F.original_title, F. release_date, F.poster_path,
+	        u.nickname, u.profile_photo_path
+		FROM fm_review R, fm_film F, fm_user u 
+		WHERE R.film_id = F.film_id
+		AND R.writer = u.user_id
+		AND F.film_id =  #{film_id}
+        OFFSET ( #{currPage} - 1 ) * #{amount} ROWS
+        FETCH NEXT #{amount} ROWS ONLY     
+    </select>
+    
+    <select id="selectTotalCount" resultType="int">         
+        SELECT COUNT(rno)
+        FROM fm_review
+        WHERE film_id =#{film_id}
+    </select>
+
+
+    <!-- 리뷰 좋아요-->
+	<insert id="heartInsert" >  
+        INSERT INTO fm_review_liked(rno,user_id,likecheck) 
+        VALUES(#{rno}, #{userId}, 1)
+    </insert>
+
+	<!-- fm_review_liked에 반영  -->
+  <!--   <update id="heartCheck">
+        UPDATE fm_review_liked
+        SET likecheck = 1
+        WHERE rno=#{rno}
+        AND writer=#{writer}
+    </update> -->
+
+<!-- 특정 리뷰의 좋아요 수는 fm_review_liked에서 rno 지정하고 likecheck=1인 컬럼의 갯수로 구하는걸로 변경 -->      
+		
+     <!-- <update id="heartCheckTotal">
+        UPDATE fm_review
+        SET like_cnt = +1
+        WHERE rno=#{rno}
+       </update>  -->
+
+    <update id="heartUncheck">
+        UPDATE fm_review_liked
+        SET likecheck=0
+        WHERE rno=#{rno}
+        AND user_id=#{userId}
+    </update>
+
+    <select id="check" resultType="com.filmee.myapp.domain.ReviewHeartVO">
+        SELECT *
+        FROM fm_review_liked
+        WHERE rno=#{rno}
+        AND user_id=#{userId}
+    </select>
+
+    <select id="heartCnt" resultType="int">
+    
+        SELECT COUNT(*)
+		FROM fm_review_liked
+		WHERE rno = #{rno}
+		AND likecheck = 1
+       
+    </select>
+    
+    <insert id="likedFilm">
+    insert into fm_film_reaction
+	(user_id, film_id,code)
+	values
+	(#{user_id}, #{film_id}, 1)
+    
+    </insert>
+    
+    <delete id="unLikedFilm">
+    delete from  fm_film_reaction
+	where user_id = #{user_id}
+	and film_id = #{film_id}
+    </delete>
+     
+
+</mapper>

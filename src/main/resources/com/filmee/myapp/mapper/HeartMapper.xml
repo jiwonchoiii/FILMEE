@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.filmee.myapp.mapper.HeartMapper">
+
+    <insert id="heartInsert" >
+        INSERT INTO fm_heart(bno,userid) 
+        VALUES(#{bno}, #{userid})
+    </insert>
+
+    <update id="heartCheck">
+        UPDATE fm_heart
+        SET likecheck=1
+        WHERE bno=#{bno}
+        AND userid=#{userid}
+    </update>
+
+    <update id="heartUncheck">
+        UPDATE fm_heart
+        SET likecheck=0
+        WHERE bno=#{bno}
+        AND userid=#{userid}
+    </update>
+
+    <select id="check" resultType="com.filmee.myapp.domain.HeartVO">
+        SELECT *
+        FROM fm_heart
+        WHERE bno=#{bno}
+        AND userid=#{userid}
+    </select>
+
+    <select id="heartCnt" resultType="int">
+        SELECT *
+        FROM fm_heart
+        WHERE bno=#{bno}
+        AND likecheck=1
+    </select>
+
+</mapper>

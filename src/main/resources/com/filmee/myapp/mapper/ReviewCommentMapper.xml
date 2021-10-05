@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+ 
+<mapper namespace="com.filmee.myapp.mapper.ReviewCommentMapper">
+
+    <insert id="insert">
+        <selectKey keyProperty="rcno" order="BEFORE" resultType="int">
+            SELECT ISEQ$$_100789.nextval FROM dual
+        </selectKey>
+        <![CDATA[ 
+            INSERT INTO fm_Review_comment(rno,writer,content)
+            VALUES (#{rno}, #{writer}, #{content})
+        ]]>
+    </insert>
+
+    <select id="list" resultType="com.filmee.myapp.domain.ReviewCommentUserVO">
+        <![CDATA[ 
+            SELECT C.*, u.user_id, u.nickname
+            FROM fm_review_comment C, fm_user u
+			WHERE C.writer=u.user_id
+            AND rno=#{rno}
+            ORDER BY rcno DESC
+        ]]>
+    </select>
+
+    <delete id="delete">
+        <![CDATA[
+            DELETE FROM fm_review_comment
+            WHERE rcno=#{rcno}
+        ]]> 
+    </delete>
+
+    <update id="update">
+        <![CDATA[ 
+            UPDATE fm_review_comment 
+            SET content=#{content},
+            update_ts=current_date
+            WHERE rcno=#{rcno}
+        ]]>
+    </update>
+
+
+    <select id="read" resultType="com.filmee.myapp.domain.ReviewCommentVO">
+        <![CDATA[ 
+            SELECT *
+            FROM fm_review_comment
+            WHERE rcno=#{rcno}
+        ]]>
+    </select>
+
+    
+    <select id="coCnt" resultType="int">
+        <![CDATA[ 
+            SELECT COUNT(*)
+            FROM fm_review_comment
+            WHERE rno=#{rno}
+        ]]>
+    </select>
+</mapper>

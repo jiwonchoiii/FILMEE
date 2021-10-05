@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>comt.filmee</groupId>
+	<artifactId>myapp</artifactId>
+	<version>1.0.0-BUILD-SNAPSHOT</version>
+	
+	<packaging>war</packaging>
+	
+	<name>filmee</name>
+    <url>filmee.com</url>
+	<description>filmee project</description>
+	
+
+	<properties>
+		<java-version>11</java-version>
+ 		<java-home>${env.JAVA_HOME}</java-home>
+ 		
+ 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<org.springframework-version>5.3.9</org.springframework-version>
+		<org.springsecurity-version>5.3.9.RELEASE</org.springsecurity-version>
+		<org.aspectj-version>1.9.7</org.aspectj-version>
+		<org.slf4j-version>1.7.32</org.slf4j-version>
+		<log4j2-version>2.14.1</log4j2-version>
+	</properties>
+	
+	
+	<dependencies>
+
+		<!-- javax.xml.bind/jaxb-api -->
+		<dependency>
+		    <groupId>javax.xml.bind</groupId>
+		    <artifactId>jaxb-api</artifactId>
+		    <version>2.3.1</version>
+		</dependency>
+		
+	
+	
+		<!-- aws-java-sdk-s3 -->
+
+		<!-- ============= S3 ============= -->
+		
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
+
+		<dependency>
+		    <groupId>com.amazonaws</groupId>
+		    <artifactId>aws-java-sdk-s3</artifactId>
+		    <version>1.12.65</version>
+		</dependency>
+
+		
+	
+	
+		<!-- spring-cloud-starter-aws -->
+		<dependency>
+		    <groupId>org.springframework.cloud</groupId>
+		    <artifactId>spring-cloud-starter-aws</artifactId>
+		    <version>2.2.6.RELEASE</version>
+		</dependency>	
+
+
+
+		<!-- ============= log4j2 ============= -->
+   
+
+		<!-- log4j-api -->
+		<dependency>
+
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j2-version}</version>
+		</dependency>
+  
+		<!-- log4j-core -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j2-version}</version>
+		</dependency>
+
+
+		<!-- ================== Logging ================== -->
+		
+
+		<!-- log4j -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		  		  
+		<!-- slf4j-api for HikariCP -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${org.slf4j-version}</version>
+		</dependency>
+		
+		<!-- slf4j-log4j12 for Spring framework logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${org.slf4j-version}</version>
+		</dependency>
+		
+		
+
+	
+	    <!-- ================== multipart =============== -->
+		<!-- commons-fileupload -->
+		<dependency>
+		    <groupId>commons-fileupload</groupId>
+		    <artifactId>commons-fileupload</artifactId>
+		    <version>1.4</version>
+		</dependency>
+		
+		<!-- commons-io -->
+		<dependency>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+		    <version>2.11.0</version>
+		</dependency>
+		
+
+		<!-- =================== lang ================== -->
+	
+	
+		<!-- commons-lang3 -->
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-lang3</artifactId>
+		    <version>3.12.0</version>
+		</dependency>
+	
+	
+		
+		<!-- ================== Driver SPY ================== -->
+		
+		
+		<!--log4jdbc-log4j2-jdbc4.1 -->
+    	<dependency>
+      		<groupId>org.bgee.log4jdbc-log4j2</groupId>
+      		<artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>
+      		<version>1.16</version>
+    	</dependency>
+
+
+		<!-- ================== Servlet/JSP ================== -->
+		
+
+		<!-- javax.servlet-api -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<!-- <version>3.1.0</version> -->
+			<version>4.0.1</version>
+			
+			<scope>provided</scope>
+		</dependency>
+	  
+		<!-- javax.servlet.jsp-api -->
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>javax.servlet.jsp-api</artifactId>
+			<version>2.3.3</version>
+			
+			<scope>provided</scope>
+		</dependency>	
+		
+		<!-- jstl -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		
+
+		<!-- ================== AspectJ ================== -->
+		
+
+		<!-- aspectjrt -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${org.aspectj-version}</version>
+		</dependency>
+		
+		<!-- aspectjweaver -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${org.aspectj-version}</version>
+		</dependency>
+
+
+		<!-- ================== Spring ================== -->
+		
+
+		<!-- spring-context -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+
+		<!-- spring-webmvc -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+
+		<!-- spring-test -->
+		<dependency>
+    		<groupId>org.springframework</groupId>
+    		<artifactId>spring-test</artifactId>
+    		<version>${org.springframework-version}</version>
+    		
+			<scope>test</scope>
+		</dependency>
+
+		<!-- spring-jdbc -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+
+		<!-- spring-tx -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+		
+		<!-- spring-security-core -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-core</artifactId>
+		    <version>${org.springsecurity-version}</version>
+
+
+		</dependency>
+		
+		<!-- spring-context-support -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${org.springframework-version}</version>
+
+		</dependency>
+		
+
+		<!-- ================== Testing ================== -->
+
+
+		<!-- junit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			
+			<scope>test</scope>
+		</dependency>
+
+
+		<!-- ================== DataSource ================== -->
+
+
+		<!-- HikariCP -->
+		<dependency>
+		    <groupId>com.zaxxer</groupId>
+		    <artifactId>HikariCP</artifactId>
+		    <version>5.0.0</version>
+		</dependency>
+
+
+		<!-- =============== MyBatis =============== -->
+      
+      
+      	<!-- mybatis -->
+		  <dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.5.7</version>
+		</dependency>
+
+		<!-- mybatis-spring -->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>2.0.6</version>
+		</dependency>
+
+
+		<!-- ================== Misc ================== -->
+
+
+		<!--javax.inject -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+		
+		<!-- json-simple -->
+		<dependency>
+		    <groupId>com.googlecode.json-simple</groupId>
+		    <artifactId>json-simple</artifactId>
+		    <version>1.1.1</version>
+		</dependency>
+
+
+		<!-- ====================== Mail ==================== -->
+
+		<!-- javax.mail -> spring-context-support도 함께 필요 -->
+		<dependency>
+		    <groupId>com.sun.mail</groupId>
+		    <artifactId>javax.mail</artifactId>
+		    <version>1.6.2</version>
+		</dependency>
+
+
+
+		<!-- ====================== Misc ==================== -->
+		
+		<!-- javax.inject -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
+		<!-- lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.20</version>
+			
+			<scope>provided</scope>
+		</dependency>
+		
+		
+		<!-- ================== JSON ================== -->
+		
+		
+		<!-- jackson-databind -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>2.12.4</version>
+		</dependency>
+		
+		<!-- jackson-mapper-asl -->
+		<dependency>
+		    <groupId>org.codehaus.jackson</groupId>
+		    <artifactId>jackson-mapper-asl</artifactId>
+		    <version>1.9.13</version>
+		</dependency>
+		
+				
+		<!-- ============= Oracle JDBC ============= -->
+		
+		
+		<dependency>
+		  <groupId>com.oracle.database.jdbc</groupId>
+		  <artifactId>ojdbc8-production</artifactId>
+		  <version>21.1.0.0</version>
+
+		  <type>pom</type>
+
+		  <exclusions>
+		    <exclusion>
+		      <groupId>com.oracle.database.ha</groupId>
+		      <artifactId>simplefan</artifactId>
+		    </exclusion>
+
+		    <exclusion>
+		      <groupId>com.oracle.database.ha</groupId>
+		      <artifactId>ons</artifactId>
+		    </exclusion>
+
+		    <exclusion>
+		      <groupId>com.oracle.database.jdbc</groupId>
+		      <artifactId>rsi</artifactId>
+		    </exclusion>
+
+		    <exclusion>
+		      <groupId>com.oracle.database.jdbc</groupId>
+		      <artifactId>ucp</artifactId>
+		    </exclusion>
+
+		    <exclusion>
+		      <groupId>com.oracle.database.xml</groupId>
+		      <artifactId>xdb</artifactId>
+		    </exclusion>
+
+		    <exclusion>
+		      <groupId>com.oracle.database.xml</groupId>
+		      <artifactId>xmlparserv2</artifactId>
+		    </exclusion>
+		  </exclusions>
+		</dependency>
+					       
+	</dependencies>
+    
+	
+	<build>
+		
+		<finalName>/</finalName>
+        
+		<plugins>
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.10</version>
+                
+				<configuration>
+                    <additionalProjectnatures>
+                        <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
+                    </additionalProjectnatures>
+                    
+					<additionalBuildcommands>
+                        <buildcommand>org.springframework.ide.eclipse.core.springbuilder</buildcommand>
+                    </additionalBuildcommands>
+                    
+					<downloadSources>true</downloadSources>
+                    <downloadJavadocs>false</downloadJavadocs>
+                </configuration>
+            </plugin>
+            
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+    			<artifactId>maven-compiler-plugin</artifactId>
+    			<version>3.8.1</version>
+    			
+    			<configuration>
+    				<verbose>true</verbose>
+    				<fork>true</fork>
+    				
+    				<meminitial>64m</meminitial>
+    				<maxmem>128m</maxmem>
+    				
+    				<encoding>${project.build.sourceEncoding}</encoding>
+    				
+    				<source>${java-version}</source>
+    				<target>${java-version}</target>
+    				
+    				<executable>${java-home}\bin\javac</executable>
+    				
+					<compilerArgs>
+    					<arg>-verbose</arg>
+            			<arg>-Xlint:all,-options,-path</arg>
+    					<arg>--release</arg>
+    				</compilerArgs>
+    				
+    				<showWarnings>true</showWarnings>
+    				<showDeprecation>true</showDeprecation>
+    			</configuration>
+            </plugin>
+            
+			<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                
+				<configuration>
+                    <mainClass>org.test.int1.Main</mainClass>
+                </configuration>
+            </plugin>        
+		</plugins>
+    
+	</build>
+    
+</project>

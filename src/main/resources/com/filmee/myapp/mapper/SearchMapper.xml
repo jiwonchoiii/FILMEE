@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.filmee.myapp.mapper.SearchMapper">
+
+	<select id='getFilmList' resultType='com.filmee.myapp.domain.SearchFilmVO'>
+		<![CDATA[			
+			SELECT film_id filmid, original_title title, poster_path poster, plot plot, to_char(release_date, 'YYYY') year, country country, runtime runtime
+			FROM fm_film
+		]]>
+		<where>
+			<choose>
+				<when test="filmTitle.equals('')">
+					<![CDATA[
+						original_title = '결과없어'
+					]]>
+				</when>						
+
+				<when test="!filmTitle.equals('')">
+					<![CDATA[
+						REPLACE(LOWER(original_title), ' ', '') LIKE '%'||REPLACE(LOWER(#{filmTitle}), ' ', '')||'%'
+						OR REPLACE(LOWER(title), ' ', '') LIKE '%'||REPLACE(LOWER(#{filmTitle}), ' ', '')||'%'
+					]]>
+				</when>
+			</choose>
+		</where>
+		<![CDATA[	
+			ORDER BY popularity DESC
+			OFFSET 0 ROWS
+			FETCH NEXT 5 ROWS ONLY
+		]]>
+	</select>
+	
+	
+	<select id='getFilmsWithPeople' resultType='com.filmee.myapp.domain.SearchPeopleVO'>
+	
+		SELECT p.enname, p.profile_path, fp.credit_order, fp.character, f.film_id, f.original_title, 
+			   to_char(f.release_date, 'yyyy'), f.popularity, f.poster_path
+		FROM fm_people p
+		INNER JOIN fm_film_people fp
+				ON p.people_id = fp.people_id
+		INNER JOIN fm_film f
+				ON fp.film_id = f.film_id
+		WHERE p.people_id = #{peopleId}
+		order by f.release_date DESC
+	</select>
+	
+	<select id='getUserList' resultType='com.filmee.myapp.domain.SearchUserVO'>
+		<![CDATA[			
+			SELECT user_id userid, nickname nickname, profile_photo_path photo 
+			FROM fm_user
+		]]>
+		<where>
+			<choose>
+				<when test="nickname.equals('')">
+					<![CDATA[
+						nickname = '결과없어'
+					]]>
+				</when>				
+
+				<when test="!nickname.equals('')">
+					<![CDATA[
+						REPLACE(LOWER(nickname), ' ', '') LIKE '%'||REPLACE(LOWER(#{nickname}), ' ', '')||'%'						
+					]]>
+				</when>
+			</choose>
+			AND is_admin = 'F'
+		</where>
+		<![CDATA[			
+			OFFSET 0 ROWS
+			FETCH NEXT 5 ROWS ONLY
+		]]>
+	</select>
+	
+	<select id='getFilmListPage' resultType='com.filmee.myapp.domain.SearchFilmVO'>
+		<![CDATA[			
+			SELECT film_id filmid, original_title title, poster_path poster, plot plot, to_char(release_date, 'YYYY') year, country country, runtime runtime
+			FROM fm_film
+		]]>
+		<where>
+			<choose>
+				<when test="searchWord.equals('')">
+					<![CDATA[
+						original_title = '결과없어'
+					]]>
+				</when>				
+
+				<when test="!searchWord.equals('')">
+					<![CDATA[
+						REPLACE(LOWER(original_title), ' ', '') LIKE '%'||REPLACE(LOWER(#{searchWord}), ' ', '')||'%'
+						OR REPLACE(LOWER(title), ' ', '') LIKE '%'||REPLACE(LOWER(#{searchWord}), ' ', '')||'%'
+					]]>
+				</when>
+			</choose>
+		</where>
+		<![CDATA[	
+			ORDER BY popularity DESC
+			OFFSET (#{currPage} - 1) * #{amount} ROWS
+			FETCH NEXT #{amount} ROWS ONLY
+		]]>
+	</select>
+	
+	
+	<select id='getFilmListInfo' resultType='com.filmee.myapp.domain.SearchFilmInfoVO'>
+		<![CDATA[			
+			SELECT A.film_id filmid, C.enname name, B.character character, B.credit_order credit, C.profile_path photo, B.people_id peopleid			
+			FROM (SELECT film_id, popularity FROM fm_film
+		]]>
+		<where>
+			<choose>
+				<when test="searchWord.equals('')">
+					<![CDATA[
+						original_title = '결과없어'
+					]]>
+				</when>				
+
+				<when test="!searchWord.equals('')">
+					<![CDATA[
+						REPLACE(LOWER(original_title), ' ', '') LIKE '%'||REPLACE(LOWER(#{searchWord}), ' ', '')||'%'
+						OR REPLACE(LOWER(title), ' ', '') LIKE '%'||REPLACE(LOWER(#{searchWord}), ' ', '')||'%'
+					]]>
+				</when>
+			</choose>			
+		</where>
+		<![CDATA[
+			) A
+			LEFT OUTER JOIN fm_film_people B on A.film_id = B.film_id
+			LEFT OUTER JOIN fm_people C on B.people_id = C.people_id
+			WHERE B.credit_order IS NULL
+			OR B.credit_order <= 4	
+			ORDER BY A.popularity DESC, B.credit_order ASC NULLS FIRST	
+		]]>
+	</select>
+	
+	<select id='getFilmListGenre' resultType='com.filmee.myapp.domain.SearchFilmGenreVO'>
+		<![CDATA[			
+			SELECT A.film_id filmid, A.genre genre			
+			FROM fm_genre A
+			LEFT OUTER JOIN fm_film B ON A.film_id = B.film_id
+		]]>
+		<where>
+			<choose>
+				<when test="searchWord.equals('')">
+					<![CDATA[
+						B.original_title = '결과없어'
+					]]>
+				</when>				
+
+				<when test="!searchWord.equals('')">
+					<![CDATA[
+						REPLACE(LOWER(B.original_title), ' ', '') LIKE '%'||REPLACE(LOWER(#{searchWord}), ' ', '')||'%'
+						OR REPLACE(LOWER(B.title), ' ', '') LIKE '%'||REPLACE(LOWER(#{searchWord}), ' ', '')||'%'
+					]]>
+				</when>
+			</choose>			
+		</where>
+		ORDER BY B.popularity DESC		
+	</select>
+	
+	<select id='getTotalCountFilmSearch' resultType='int'>
+		<![CDATA[			
+			SELECT count(*)
+			FROM fm_film
+		]]>
+		<where>
+			<choose>
+				<when test="searchWord.equals('')">
+					<![CDATA[
+						original_title = '결과없어'
+					]]>
+				</when>				
+
+				<when test="!searchWord.equals('')">
+					<![CDATA[
+						REPLACE(LOWER(original_title), ' ', '') LIKE '%'||REPLACE(LOWER(#{searchWord}), ' ', '')||'%'
+						OR REPLACE(LOWER(title), ' ', '') LIKE '%'||REPLACE(LOWER(#{searchWord}), ' ', '')||'%'
+					]]>
+				</when>
+			</choose>
+		</where>		
+	</select>
+	
+	<select id='getUserListPage' resultType='com.filmee.myapp.domain.SearchUserVO'>
+		<![CDATA[			
+			SELECT user_id userid, nickname nickname, profile_photo_path photo 
+			FROM fm_user
+		]]>
+		<where>
+			<choose>
+				<when test="searchWord.equals('')">
+					<![CDATA[
+						nickname = '결과없어'
+					]]>
+				</when>				
+
+				<when test="!searchWord.equals('')">
+					<![CDATA[
+						REPLACE(LOWER(nickname), ' ', '') LIKE '%'||REPLACE(LOWER(#{searchWord}), ' ', '')||'%'						
+					]]>
+				</when>				
+			</choose>
+			AND is_admin = 'F'
+		</where>
+		<![CDATA[			
+			OFFSET (#{currPage} - 1) * #{amount} ROWS
+			FETCH NEXT #{amount} ROWS ONLY
+		]]>
+	</select>
+	
+	<select id='getTotalCountUserSearch' resultType='int'>
+		<![CDATA[			
+			SELECT count(*) 
+			FROM fm_user
+		]]>
+		<where>
+			<choose>
+				<when test="searchWord.equals('')">
+					<![CDATA[
+						nickname = '결과없어'
+					]]>
+				</when>				
+
+				<when test="!searchWord.equals('')">
+					<![CDATA[
+						REPLACE(LOWER(nickname), ' ', '') LIKE '%'||REPLACE(LOWER(#{searchWord}), ' ', '')||'%'						
+					]]>
+				</when>
+			</choose>
+			AND is_admin = 'F'
+		</where>		
+
+	</select>
+
+</mapper>

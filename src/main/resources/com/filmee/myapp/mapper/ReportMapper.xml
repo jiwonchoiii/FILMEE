@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.filmee.myapp.mapper.ReportMapper">
+    <insert id="newReport">
+        INSERT INTO fm_report(code,accuser,target_type,target,suspect,content,insert_ts)
+        VALUES (#{code}, #{accuser}, #{target_type}, #{target}, #{suspect}, #{content}, current_date)
+    </insert>
+
+    <select id="getList" resultType="com.filmee.myapp.domain.ReportVO">
+        SELECT r.*, u.nickname
+        FROM fm_report r
+        LEFT OUTER JOIN fm_user u 
+        ON(r.mgr_id=u.user_id)
+        ORDER BY r.rptno DESC
+        OFFSET (#{currPage}-1) * #{amount} ROW
+        FETCH NEXT #{amount} ROWS ONLY
+    </select>
+    
+    <select id="getTotal" resultType="int">
+        SELECT count(rptno)
+        FROM fm_report
+    </select>
+
+    <update id="complete">
+        UPDATE fm_report
+        SET complete_ts=current_date, 
+        	mgr_id=#{mgrId},
+        	sus_period=#{susPeriod}
+        WHERE rptno=#{rptno}
+    </update>
+
+    <update id="updateUserSus">
+    	<![CDATA[ 
+			UPDATE fm_user
+			SET sus_from=current_date,
+			    sus_to=(SELECT case
+			                    WHEN sus_to is null			then current_date
+			                    WHEN sus_to > current_date 	then sus_to
+			                    WHEN sus_to <= current_date then current_date
+			                    END
+			            FROM fm_user
+			            WHERE user_id=#{suspect}) + #{susPeriod},
+			    sus_reason=#{rptno}
+			WHERE user_id=#{suspect}
+		]]>	
+    </update>
+    
+</mapper>

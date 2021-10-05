@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.filmee.myapp.mapper.JoinMapper">
+
+    <insert id="insertUser">
+        
+		INSERT INTO
+	    	fm_user(email, password, nickname, salt, auth_code)
+		VALUES
+	    	(#{email}, #{password}, #{nickname}, #{salt}, #{authCode})
+
+	</insert>
+	
+	<select id="countUsersWithEmail" resultType = "int">
+		SELECT count(*)
+		FROM fm_user
+		WHERE email = #{email}
+	</select>
+	
+	<select id="countUsersWithNickname" resultType = "int">
+		SELECT count(*)
+		FROM fm_user
+		WHERE REPLACE(LOWER(nickname), ' ', '') = REPLACE(LOWER(#{nickname}), ' ', '')
+		
+	</select>
+	
+	<update id="updateAuthCodeAuthorized">
+		UPDATE fm_user
+		   SET auth_code='authorized'
+		 WHERE email=#{email}
+		   AND #{authCode}=( 
+			 			   SELECT auth_code
+							 FROM fm_user
+							WHERE email=#{email}
+		   					)
+	</update>
+	
+    <insert id="updateUserAsDeleted">
+       
+		UPDATE fm_user
+		   SET email     = email||'_D_'||user_id,
+			   delete_ts = current_date
+		 WHERE user_id = #{userId}
+
+	</insert>
+	
+	
+</mapper>

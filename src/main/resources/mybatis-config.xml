@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+  <!-- Data Source는 Spring이 제공하므로 myBatis가 자체적으로 제공하는 Data Source는 사용하지 않음 ==> environments 태그 사용안함  -->
+
+  <mappers> 
+    <!-- <mapper class="FQCN방식으로 인터페이스를 등록"></mapper> -->
+    <!-- <mapper resource="xml파일 등록"/> -->
+    
+
+  </mappers>
+
+</configuration>

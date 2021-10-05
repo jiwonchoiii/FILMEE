@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.filmee.myapp.mapper.BoardMapper">
+
+    <select id="getList" resultType="com.filmee.myapp.domain.BoardUserVO">
+
+        SELECT b.*, u.user_id, u.profile_photo_path profilePhotoPath, u.nickname nickname
+		FROM fm_board b 
+		INNER JOIN fm_user u ON(b.writer=u.user_id)
+        <where>
+            <choose>
+                <when test="type eq 'T'.toString()">
+                    title LIKE '%'||#{keyword}||'%'
+                </when>
+
+                <when test="type eq 'C'.toString()">
+                    content LIKE '%'||#{keyword}||'%'
+                </when>
+
+                <when test="type eq 'W'.toString()">
+                    u.nickname LIKE '%'||#{keyword}||'%'
+                </when>
+                
+                <when test="category eq 'F'.toString()">
+                	category='F'
+                </when>
+                                
+                <when test="category eq 'R'.toString()">
+                	category='R'
+                </when>
+                                
+                <when test="category eq 'B'.toString()">
+                	category='B'
+                </when>
+                                
+                <when test="category eq 'N'.toString()">
+                	category='N'
+                </when>
+					
+              </choose>
+        </where>
+        AND b.delete_ts IS NULL
+  		ORDER BY b.bno DESC      
+        OFFSET (#{currPage}-1) * #{amount} ROW
+        FETCH NEXT #{amount} ROWS ONLY
+
+    </select>
+
+    <select id="select" resultType="com.filmee.myapp.domain.BoardUserVO">
+      <![CDATA[ 
+        SELECT b.*, u.user_id, u.nickname, u.profile_photo_path profilePhotoPath
+        FROM fm_board b, fm_user u 
+        WHERE b.writer=u.user_id
+        AND bno=#{bno}
+      ]]>
+    </select>
+
+    <insert id="insertSelectKey">
+      <selectKey keyProperty="bno" order="BEFORE" resultType="int">
+        SELECT ISEQ$$_101436.nextval FROM dual
+      </selectKey>
+      <![CDATA[ 
+        INSERT INTO fm_board(writer, category, title, content)
+        VALUES(#{writer},#{category},#{title}, #{content})
+      ]]>
+    </insert>
+
+    <update id="update">
+      <![CDATA[ 
+        UPDATE fm_board
+        SET title=#{title}, category=#{category}, CONTENT=#{content}, update_ts=current_date
+        WHERE bno=#{bno}
+      ]]>
+    </update>
+
+    <delete id="delete">
+      <![CDATA[ 
+        UPDATE fm_board
+        SET delete_ts=current_date
+        WHERE bno=#{bno}
+      ]]>
+    </delete>
+
+    <select id="getTotalCount" resultType="int">
+
+        SELECT count(bno)
+        FROM fm_board
+
+        <where>
+          <choose>  
+          	<when test="type eq 'T'.toString()">
+                AND title LIKE '%'||#{keyword}||'%'
+            </when>
+
+            <when test="type eq 'C'.toString()">
+                AND content LIKE '%'||#{keyword}||'%'
+            </when>
+
+            <when test="type eq 'W'.toString()">
+                AND writer LIKE '%'||#{keyword}||'%'
+            </when>
+            
+            <when test="category eq 'F'.toString()">
+              category='F'
+            </when>
+                            
+            <when test="category eq 'R'.toString()">
+              category='R'
+            </when>
+                            
+            <when test="category eq 'B'.toString()">
+              category='B'
+            </when>
+                            
+            <when test="category eq 'N'.toString()">
+              category='N'
+            </when>
+            <otherwise>
+              bno>0
+            </otherwise>  
+          </choose>
+        </where>
+        AND delete_ts IS NULL
+    </select>
+    
+    <update id="viewCnt" parameterType="int">
+      UPDATE fm_board 
+      SET view_cnt = view_cnt+#{amount}
+      where bno=#{bno}
+    </update>
+
+
+    <update id="commentCnt" parameterType="int">
+      UPDATE fm_board 
+      SET comment_cnt = comment_cnt + #{amount}
+      WHERE bno=#{bno}
+    </update>
+    
+    <update id="heartCnt" parameterType="int">
+      UPDATE fm_board 
+      SET like_cnt = like_cnt + #{amount}
+      WHERE bno=#{bno}
+    </update>
+    
+</mapper>
